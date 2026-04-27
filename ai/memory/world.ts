@@ -17,16 +17,22 @@ export interface EventLogEntry {
   payload?: any
 }
 
+export interface CatalogState {
+  products: Product[]
+}
+
 export interface WorldState {
   tasks: Record<string, TaskRecord>
   agents: string[]
   history: EventLogEntry[]
+  catalog?: CatalogState
 }
 
 export function createInitialWorld(): WorldState {
   return {
     tasks: {},
     agents: ['CatalogAgent', 'CartAgent', 'CheckoutAgent'],
-    history: []
+    history: [],
+    catalog: { products: [] }
   }
 }
