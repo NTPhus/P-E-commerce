@@ -1,0 +1,21 @@
+# Phase 0 Test Plan (MVP Scaffolding)
+
+- Objective: Validate that Planner, Memory, and Rules skeleton can plan and dispatch MVP tasks to Agent stubs.
+- Scope: T0.1 (define MVP domains) through T0.10 (documentation). Basic end-to-end demo via demo-phase0.ts.
+- Acceptance Criteria:
+- 1) Phase 0 demo runner can execute a simple task (create_product) via CatalogAgent stub and return a success payload.
+- 2) World state is updated with the planned task and a history event is appended.
+- 3) Commit history reflects per-task commits for Phase 0 skeleton.
+- 4) Documentation for Phase 0 is in place (PHASE0_PLAN.md, PHASE0_MEMORY and DECISIONS).
+- Acceptance Criteria:
+- 1) Phase 0 demo runner can execute a simple task (create_product) via CatalogAgent stub and return a success payload.
+- 2) World state is updated with the planned task and a history event is appended.
+- 3) Commit history reflects per-task commits for Phase 0 skeleton.
+- 4) Documentation for Phase 0 is in place (PHASE0_PLAN.md, PHASE0_MEMORY and DECISIONS).
+- Acceptance Criteria:
+- 1) Phase 0 demo runner can execute a simple task (create_product) via CatalogAgent stub and return a success payload.
+- 2) World state is updated with the planned task and a history event is appended.
+- 3) Commit history reflects per-task commits for Phase 0 skeleton.
+- 4) Documentation for Phase 0 is in place (PHASE0_PLAN.md, PHASE0_MEMORY and DECISIONS).
+- Demo coverage:
+- 1) T0.1: Plan task; 2) T0.2: Extend data model; 3) T0.3: Define planner events; 4) T0.4: Testing plan execution.

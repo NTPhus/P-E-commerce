@@ -49,6 +49,26 @@ export async function executePlanned(input: IncomingTask, state: WorldState, age
   return res
 }
 
+// Task lifecycle helpers (Phase 0 MVP)
+export function startTask(state: WorldState, taskId: string) {
+  const t = state.tasks[taskId]
+  if (t) t.status = 'in_progress'
+  state.tasks[taskId] = t!
+  state.history.push({ timestamp: Date.now(), type: 'task_started', payload: { taskId } })
+  return t
+}
+
+export function completeTask(state: WorldState, taskId: string, result?: any) {
+  const t = state.tasks[taskId]
+  if (t) {
+    t.status = 'completed'
+    t.result = result
+  }
+  state.tasks[taskId] = t!
+  state.history.push({ timestamp: Date.now(), type: 'task_completed', payload: { taskId, result } })
+  return t
+}
+
 export default {
   planTask,
   executePlanned
