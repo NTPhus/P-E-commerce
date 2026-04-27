@@ -10,5 +10,16 @@
       {"id": "p-1002", "name": "Demo Product B", "price": 19.99}
     ]
   },
-  "agents": ["CatalogAgent", "CartAgent", "CheckoutAgent"]
+  "agents": ["CatalogAgent", "CartAgent", "CheckoutAgent"],
+  "chat": {
+    "rooms": [
+      {
+        "roomId": "admin-chat",
+        "messages": [
+          {"id": "m1", "senderId": "system", "text": "Welcome to Phase 1 UI dashboard", "timestamp": 1640000000000},
+          {"id": "m2", "senderId": "admin", "text": "Hello team!", "timestamp": 1640000001000}
+        ]
+      }
+    ]
+  }
 }
