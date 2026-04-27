@@ -1,0 +1,14 @@
+{
+  "tasks": [
+    {"id": "T1.1", "title": "Plan MVP DAG", "status": "pending"},
+    {"id": "T1.2", "title": "Initialize Memory Snapshot", "status": "in_progress"},
+    {"id": "T1.3", "title": "Bind UI to API", "status": "pending"}
+  ],
+  "catalog": {
+    "products": [
+      {"id": "p-1001", "name": "Demo Product A", "price": 9.99},
+      {"id": "p-1002", "name": "Demo Product B", "price": 19.99}
+    ]
+  },
+  "agents": ["CatalogAgent", "CartAgent", "CheckoutAgent"]
+}
