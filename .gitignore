@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+apps/web/dist/
+apps/web/node_modules/
+apps/admin/node_modules/
+apps/api/node_modules/
+.env
+.env.local
+.env.*
+*.log
+.DS_Store
+.idea/
+.vscode/
+npm-debug.log*
+yarn.lock
