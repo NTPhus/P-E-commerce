@@ -1,0 +1,33 @@
+name: Phase 1 UI Smoke Tests
+on:
+  pull_request:
+    branches: [ phase1-ui-pr, dev, main ]
+  push:
+    branches: [ phase1-ui-pr, dev, main ]
+jobs:
+  ui_smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install root dependencies
+        run: npm ci
+      - name: Build Phase 1 UI
+        run: npm run build --prefix apps/web
+      - name: Start Phase 1 UI Preview
+        run: |
+          npm run preview --prefix apps/web &
+          echo $! > /tmp/phase1_ui_pid
+          sleep 15
+      - name: Install Playwright browsers
+        run: npx playwright install
+      - name: Run Playwright e2e (Phase 1 UI)
+        run: npm run test:e2e --prefix apps/web
+      - name: Stop Phase 1 UI Preview
+        if: always()
+        run: |
+          if [ -f /tmp/phase1_ui_pid ]; then kill -9 \$(cat /tmp/phase1_ui_pid) || true; fi
