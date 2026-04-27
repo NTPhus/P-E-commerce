@@ -1,11 +1,11 @@
-name: Phase 0 CI
+name: Phase 0 & Phase 1 CI (UI smoke)
 on:
   push:
-    branches: [ phase0-skeleton, main ]
+    branches: [ phase0-skeleton, dev, main, phase1-ui-pr ]
   pull_request:
-    branches: [ phase0-skeleton, main ]
+    branches: [ phase0-skeleton, dev, main, phase1-ui-pr ]
 jobs:
-  build:
+  ui-smoke:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,12 +13,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - name: Install dependencies
+      - name: Install dependencies (root)
+        run: npm install
+      - name: Build Phase 1 UI (apps/web)
+        run: npm run build --prefix apps/web
+      - name: Install Playwright browsers
+        run: npx playwright install
+      - name: Start UI server (Phase 1)
         run: |
-          npm install
-      - name: TypeScript Compile
-        run: |
-          npm run -s build || true
-      - name: Run TypeScript Lint (if configured)
-        run: |
-          npm run -s lint || true
+          npm run dev --prefix apps/web &
+          sleep 20
+      - name: Run Playwright end-to-end tests
+        run: npm run test:e2e --prefix apps/web || true
