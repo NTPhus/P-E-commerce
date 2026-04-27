@@ -36,3 +36,44 @@ export function createInitialWorld(): WorldState {
     catalog: { products: [] }
   }
 }
+
+// Simple replay utility to reconstruct world state from event history
+export function replayWorldFromHistory(state: WorldState): WorldState {
+  // Start from a shallow clone to avoid mutating input state unexpectedly
+  const working = { ...state, tasks: { ...state.tasks }, history: [ ...state.history ] }
+  for (const ev of working.history) {
+    try {
+      const payload: any = ev.payload || {}
+      switch (ev.type) {
+        case 'task_started': {
+          const t = working.tasks[payload.taskId]
+          if (t) t.status = 'in_progress'
+          break
+        }
+        case 'task_completed': {
+          const t = working.tasks[payload.taskId]
+          if (t) {
+            t.status = 'completed'
+            t.result = payload.result
+          }
+          break
+        }
+        case 'task_executed': {
+          const t = working.tasks[payload.taskId]
+          // If specific result available, mark completed
+          if (t) {
+            t.status = 'completed'
+            t.result = payload.result
+          }
+          break
+        }
+        default:
+          // unknown event; ignore
+          break
+      }
+    } catch {
+      // ignore faulty event payloads in replay to keep drain running
+    }
+  }
+  return working
+}
