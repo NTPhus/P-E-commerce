@@ -1,0 +1,145 @@
+name: Phase 2 Backend CI
+
+on:
+  push:
+    branches: [phase2-planning, main, dev]
+    paths:
+      - 'apps/api/**'
+      - 'prisma/**'
+      - '.github/workflows/phase2-ci.yml'
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - 'apps/api/**'
+      - 'prisma/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    name: Lint Code
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Lint API
+        run: npm run lint --workspace=@app/api
+        continue-on-error: true
+
+  test-auth:
+    runs-on: ubuntu-latest
+    name: Test Auth Module
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run Auth JWT tests
+        run: npm test -- auth.jwt.test.ts
+        working-directory: apps/api
+      
+      - name: Run RBAC tests
+        run: npm test -- rbac.guard.test.ts
+        working-directory: apps/api
+
+  test-cart-checkout:
+    runs-on: ubuntu-latest
+    name: Test Cart & Checkout
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run Cart & Checkout integration tests
+        run: npm test -- cart-checkout.integration.test.ts
+        working-directory: apps/api
+
+  test-catalog:
+    runs-on: ubuntu-latest
+    name: Test Catalog Module
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run Catalog tests
+        run: npm test -- catalog.test.ts
+        working-directory: apps/api
+        continue-on-error: true
+
+  build-api:
+    runs-on: ubuntu-latest
+    name: Build API
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build API
+        run: npm run build --workspace=@app/api
+        continue-on-error: true
+
+  prisma-validate:
+    runs-on: ubuntu-latest
+    name: Validate Prisma Schema
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Validate Prisma schema
+        run: npx prisma validate
+        working-directory: .
+        continue-on-error: true
+
+  report-status:
+    runs-on: ubuntu-latest
+    name: Report Phase 2 Status
+    needs: [lint, test-auth, test-cart-checkout, test-catalog, build-api, prisma-validate]
+    if: always()
+    steps:
+      - name: Check CI Status
+        run: |
+          echo "### Phase 2 Backend CI Report"
+          echo "- Auth Module Tests: ${{ needs.test-auth.result }}"
+          echo "- Cart & Checkout Tests: ${{ needs.test-cart-checkout.result }}"
+          echo "- Catalog Tests: ${{ needs.test-catalog.result }}"
+          echo "- API Build: ${{ needs.build-api.result }}"
+          echo "- Prisma Schema: ${{ needs.prisma-validate.result }}"
+        shell: bash
