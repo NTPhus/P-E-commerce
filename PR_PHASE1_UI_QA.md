@@ -1,0 +1,28 @@
+Phase 1 UI QA Runbook
+- Objective: Validate Phase 1 UI MVP scaffold using mock data; ensure stability and readiness for backend integration.
+- Scope: Phase 1 UI on apps/web and admin dashboard with SVG charts and local chat panel.
+- Prerequisites:
+-  - Node.js and npm must be installed.
+-  - gh CLI installed and authenticated (base: dev, head: phase1-ui-pr).
+- Steps:
+- 1) Install deps and build
+-    - cd D:\P-E-commerce\apps\web
+-    - npm install
+-    - npm run build
+- 2) Run UI locally
+-    - npm run dev
+- 3) Validate UI
+-    - Open http://localhost:5173
+- 4) Validate UI data and charts
+-    - Ensure three panels load data from mockPhase1Data.json
+-    - SVG charts render and scale with data
+-    - Local chat panel accepts input and displays messages
+- 5) QA checklist
+-    - Build succeeds without errors
+-    - UI renders without missing assets
+-    - No sensitive data in UI or mocks beyond safe sample data
+- 6) Rollback/DoD
+-    - Phase 1 UI isolated in PR; can revert if issues found
+- 7) Post-PR
+-    - Wire UI to mock APIs or real endpoints when backend is ready
+-    - Add more charts and drill-downs, prepare backend integration
