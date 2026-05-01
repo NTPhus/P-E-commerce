@@ -55,3 +55,19 @@ jobs:
           body: "Phase 3 Checkout milestone: implement checkout flow with address, payment method, and order confirmation."
           labels: phase3 milestone/checkout ready-for-merge
           draft: false
+
+  create_profile_pr:
+    runs-on: ubuntu-latest
+    if: github.event.ref == 'refs/heads/phase3-profile'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create PR Profile
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: dev
+          head: phase3-profile
+          title: "feat(phase3): Profile milestone"
+          body: "Phase 3 Profile milestone: implement user profile and order history UI."
+          labels: phase3 milestone/profile ready-for-merge
+          draft: false
