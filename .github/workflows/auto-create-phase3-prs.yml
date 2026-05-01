@@ -21,7 +21,7 @@ jobs:
           head: phase3-catalog
           title: "feat(phase3): Catalog milestone"
           body: "Phase 3 Catalog milestone: implement catalog UI with search, filters, and product cards."
-          labels: phase3 milestone/catalog ready-for-merge
+          labels: phase3/catalog-ready ready-for-merge
           draft: false
 
   create_cart_pr:
@@ -37,7 +37,7 @@ jobs:
           head: phase3-cart
           title: "feat(phase3): Cart milestone"
           body: "Phase 3 Cart milestone: implement cart with add/remove items, totals, and persistence."
-          labels: phase3 milestone/cart ready-for-merge
+          labels: phase3/cart-ready ready-for-merge
           draft: false
 
   create_checkout_pr:
@@ -53,7 +53,7 @@ jobs:
           head: phase3-checkout
           title: "feat(phase3): Checkout milestone"
           body: "Phase 3 Checkout milestone: implement checkout flow with address, payment method, and order confirmation."
-          labels: phase3 milestone/checkout ready-for-merge
+          labels: phase3/checkout-ready ready-for-merge
           draft: false
 
   create_profile_pr:
@@ -69,5 +69,5 @@ jobs:
           head: phase3-profile
           title: "feat(phase3): Profile milestone"
           body: "Phase 3 Profile milestone: implement user profile and order history UI."
-          labels: phase3 milestone/profile ready-for-merge
+          labels: phase3/profile-ready ready-for-merge
           draft: false
