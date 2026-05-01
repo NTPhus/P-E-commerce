@@ -2,13 +2,14 @@ name: Phase 2 Backend CI
 
 on:
   push:
-    branches: [phase2-planning, main, dev]
+    branches: [phase2-planning, dev]
     paths:
       - 'apps/api/**'
       - 'prisma/**'
       - '.github/workflows/phase2-ci.yml'
+      - 'package.json'
   pull_request:
-    branches: [main, dev]
+    branches: [dev]
     paths:
       - 'apps/api/**'
       - 'prisma/**'
@@ -20,31 +21,50 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node
+      - name: Setup Node 18 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
+          cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci --prefer-offline
       
       - name: Lint API
         run: npm run lint --workspace=@app/api
         continue-on-error: true
 
   test-auth:
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ecommerce_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     runs-on: ubuntu-latest
     name: Test Auth Module
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node
+      - name: Setup Node 18 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
+          cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci --prefer-offline
+      
+      - name: Generate Prisma client
+        run: npx prisma generate --schema apps/api/prisma/schema.prisma
       
       - name: Run Auth JWT tests
         run: npm test -- auth.jwt.test.ts
@@ -60,13 +80,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node
+      - name: Setup Node 18 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
+          cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci --prefer-offline
+      
+      - name: Generate Prisma client
+        run: npx prisma generate --schema apps/api/prisma/schema.prisma
       
       - name: Run Cart & Checkout integration tests
         run: npm test -- cart-checkout.integration.test.ts
@@ -78,13 +102,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node
+      - name: Setup Node 18 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
+          cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci --prefer-offline
       
       - name: Run Catalog tests
         run: npm test -- catalog.test.ts
@@ -97,13 +122,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Node
+      - name: Setup Node 18 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
+          cache: 'npm'
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci --prefer-offline
       
       - name: Build API
         run: npm run build --workspace=@app/api
