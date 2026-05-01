@@ -18,6 +18,9 @@ export default function ProductCard({ product, onAdd }: Props) {
     <div style={{ border: '1px solid #eee', borderRadius: 8, padding: 12, width: 260 }}>
       <div style={{ height: 150, background: '#f3f3f3', borderRadius: 6 }} />
       <h3 style={{ margin: '8px 0' }}>{product.name}</h3>
+      {product.category && (
+        <div style={{ fontSize: 12, color: '#666', marginBottom: 6 }}>{product.category}</div>
+      )}
       <p style={{ color: '#555' }}>{product.description ?? ''}</p>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <strong>${product.price.toFixed(2)}</strong>

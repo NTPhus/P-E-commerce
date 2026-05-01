@@ -5,6 +5,8 @@ import type { Product } from '@/types'
 
 export default function Catalog() {
   const [products, setProducts] = useState<Product[]>([])
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState<string>('')
 
   useEffect(() => {
     const load = async () => {
@@ -23,11 +25,28 @@ export default function Catalog() {
     load()
   }, [])
 
+  const categories = Array.from(new Set((products || []).map((p) => p.category).filter(Boolean)))
+  const filtered = products.filter((p) => {
+    const byQuery = (p.name + ' ' + (p.description ?? '')).toLowerCase().includes(query.toLowerCase())
+    const byCat = category ? (p.category ?? '') === category : true
+    return byQuery && byCat
+  })
+
   return (
     <div style={{ padding: 20 }}>
       <h2>Catalog</h2>
+      <div style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
+        <input placeholder="Search products" value={query} onChange={(e) => setQuery(e.target.value)} style={{ padding: 8, borderRadius: 4, border: '1px solid #ddd' }} />
+        <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ padding: 8, borderRadius: 4, border: '1px solid #ddd' }}>
+          <option value="">All Categories</option>
+          {categories.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+        <button onClick={() => { setQuery(''); setCategory('') }} style={{ padding: '8px 12px' }}>Clear</button>
+      </div>
       <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
-        {products.map((p) => (
+        {filtered.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
