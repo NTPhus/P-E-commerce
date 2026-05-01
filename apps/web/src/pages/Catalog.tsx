@@ -16,8 +16,8 @@ export default function Catalog() {
       } catch {
         // fallback to local mock data if API not ready
         const mock: Product[] = [
-          { id: 'p1', name: 'Sample Product 1', description: 'Desc 1', price: 9.99, stock: 100 },
-          { id: 'p2', name: 'Sample Product 2', description: 'Desc 2', price: 19.99, stock: 50 },
+          { id: 'p1', name: 'Sample Product 1', description: 'Desc 1', price: 9.99, stock: 100, category: 'General' },
+          { id: 'p2', name: 'Sample Product 2', description: 'Desc 2', price: 19.99, stock: 50, category: 'Electronics' },
         ]
         setProducts(mock)
       }
