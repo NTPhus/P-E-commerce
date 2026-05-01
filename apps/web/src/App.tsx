@@ -5,6 +5,8 @@ import Catalog from './pages/Catalog'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import Profile from './pages/Profile'
+import Login from './pages/Login'
+import { Navigate } from 'react-router-dom'
 
 function Nav() {
   return (
@@ -19,15 +21,21 @@ function Nav() {
 }
 
 export default function App() {
+  // Redirect authenticated users away from login page
+  // @ts-ignore
+  const isAuth = typeof window !== 'undefined' && localStorage.getItem('authToken')
   return (
     <BrowserRouter>
       <Nav />
       <Routes>
+        {!isAuth && <Route path="/login" element={<Login />} />}
         <Route path="/" element={<Home />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   )
