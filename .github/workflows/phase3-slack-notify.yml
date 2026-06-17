@@ -1,0 +1,19 @@
+name: Phase 3 Slack Notify
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited, labeled, closed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'dev'
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ github.event.action }}
+          fields: repo,commit,author
+          author_name: "PR Bot"
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
