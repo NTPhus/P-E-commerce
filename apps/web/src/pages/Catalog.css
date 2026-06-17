@@ -1,0 +1,9 @@
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.catalog-controls {
+  display: flex; gap: 12px; align-items: center; margin-bottom: 12px;
+}

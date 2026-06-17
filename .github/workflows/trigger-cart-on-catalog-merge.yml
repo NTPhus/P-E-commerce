@@ -1,0 +1,21 @@
+name: Trigger Phase 3 Cart PR on Catalog Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  create_cart_pr_on_catalog_merge:
+    if: |
+      github.event.pull_request.base.ref == 'dev' &&
+      github.event.pull_request.head.ref == 'phase3-catalog' &&
+      github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create PR for Phase 3 Cart milestone
+        run: |
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/NTPhus/P-E-commerce/pulls \
+            -d '{"title":"feat(phase3): Cart milestone","head":"phase3-cart","base":"dev","body":"Phase 3 Cart milestone: implement cart with add/remove items, totals, and persistence."}'
