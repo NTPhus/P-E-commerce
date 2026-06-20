@@ -1,47 +1,49 @@
-# Coding Rules & Production Standards
+# Coding Rules & Runtime Standards
 
-This file defines the strict development standards for the **P-E-commerce** platform. All AI agents and developers MUST follow these.
+These rules should reflect the repo as it exists today.
 
-## 1. Naming Conventions
-- **Files**: `kebab-case.ts` (e.g., `user-profile.component.tsx`).
-- **Variables/Functions**: `camelCase`.
-- **Classes/Interfaces/Types**: `PascalCase`.
-- **Constants/Enums**: `UPPER_SNAKE_CASE`.
-- **Database Tables**: `snake_case` (Prisma handles mapping).
+## 1. Naming
+- Files: prefer existing repo conventions; do not rename broadly without reason.
+- Variables/functions: `camelCase`
+- Classes/types/interfaces: `PascalCase`
+- Enums/constants: `UPPER_SNAKE_CASE` or enum members as already used
 
-## 2. Monorepo Folder Structure
-- `/apps/web`: React + Vite (Buyer/Social).
-- `/apps/api`: NestJS (Core Backend).
-- `/apps/admin`: React + Vite (Dashboard).
-- `/packages/ui`: Shared Tailwind components.
-- `/packages/schema`: Shared Zod schemas and Prisma client.
-- `/packages/utils`: Common helper functions.
+## 2. Repo Structure
+- `/apps/web`: buyer + seller React/Vite UI
+- `/apps/api`: NestJS commerce backend
+- `/apps/admin`: admin React/Vite dashboard
+- `/ai`: planning docs, memory, agent scaffolding
 
-## 3. Backend Layering (NestJS)
-- **Controller**: Purely for request handling (routing, validation via Zod).
-- **Service**: Business logic (transaction handling, external API calls).
-- **Repository**: Database abstraction (Prisma calls, complex queries).
-- **DTO**: Request/Response structure validation (Zod + Class-validator).
+Do not assume `TurboRepo`, `packages/*`, or shared workspace packages exist unless they are actually added.
 
-## 4. Frontend Component Design
-- **Atomic Design**: `atoms`, `molecules`, `organisms`, `templates`.
-- **Logic**: Use custom hooks for all API calls and complex state logic.
-- **Styling**: TailwindCSS ONLY. No inline styles. Blue theme as primary.
-- **State**: `Zustand` for global state, `React Query` (TanStack) for server state.
+## 3. Backend Rules
+- Controllers handle routing and auth boundaries.
+- Services hold business rules and transaction logic.
+- Prisma can be called directly from services in this MVP; introducing a repository layer is optional, not mandatory.
+- Keep `/v1` route prefix intact.
+- Prefer explicit business-rule errors over generic failures.
+
+## 4. Frontend Rules
+- Preserve the current lightweight React/Vite approach.
+- Keep UI practical and role-aware.
+- Avoid introducing heavy state libraries unless there is a clear need.
+- Inline styles should be avoided when editing current screens; prefer CSS files already used by the repo.
 
 ## 5. API Conventions
-- **Restful**: Proper use of GET, POST, PUT, DELETE, PATCH.
-- **Versioning**: Prefix all routes with `/v1`.
-- **Responses**: Consistent wrapper `{ success: boolean, data: any, message: string }`.
-- **Error Handling**: Use global exception filters. Never return raw DB errors to client.
+- Use RESTful routing with `GET`, `POST`, `PATCH`, `DELETE`.
+- Return raw objects when that matches existing modules; avoid introducing a second response convention inside the same app.
+- Keep auth as bearer-token based JWT.
 
-## 6. Performance & Optimization
-- **N+1**: Always use Prisma `include` or `select` carefully. Use Batching if needed.
-- **Pagination**: Compulsory for all list endpoints (Cursor-based for Feed, Offset-based for Products).
-- **Caching**: Cache recommendation scores and frequent social lookups.
-- **Media**: All images/videos must go through Cloudinary with proper transformations.
+## 6. Current Business Rules To Preserve
+- Cart is single-seller.
+- Checkout is COD-only.
+- Buyer can cancel only confirmed orders.
+- Seller can only fulfill orders belonging entirely to that seller.
+- Admin can manage categories and override order state.
+- Media upload is restricted to seller/admin.
 
-## 7. Testing Strategy
-- **Unit**: Vitest for business logic in Services/Utils.
-- **Integration**: Testing Controller -> Service -> DB flow.
-- **E2E**: Playwright for critical paths (Checkout, Signup).
+## 7. Testing
+- API: Jest
+- Web: Vitest
+- Admin: add tests only when signal is worth the setup cost
+- Prefer adding targeted tests around business rules and regressions

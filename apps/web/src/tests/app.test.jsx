@@ -16,16 +16,22 @@ describe('Commerce App', () => {
       if (String(url).includes('/products')) {
         return Promise.resolve({
           ok: true,
-          json: async () => [{
-            id: 'prod-1',
-            name: 'Portable Desk Lamp',
-            description: 'Rechargeable lamp',
-            price: 24.99,
-            stock: 4,
-            images: [],
-            category: { id: 'cat-1', name: 'Home' },
-            seller: { id: 'seller-1', name: 'Demo Seller' },
-          }],
+          json: async () => ({
+            items: [{
+              id: 'prod-1',
+              name: 'Portable Desk Lamp',
+              description: 'Rechargeable lamp',
+              price: 24.99,
+              stock: 4,
+              images: [],
+              category: { id: 'cat-1', name: 'Home' },
+              seller: { id: 'seller-1', name: 'Demo Seller' },
+            }],
+            total: 1,
+            page: 1,
+            pageSize: 12,
+            totalPages: 1,
+          }),
         })
       }
 

@@ -1,81 +1,94 @@
-# P-E-commerce: Unified Commerce & Social Platform
+# P-E-commerce: Commerce Core MVP
 
-## 🌟 Tổng quan dự án
-P-E-commerce là một nền tảng hiện đại tích hợp ba trụ cột chính: **Thương mại điện tử (E-commerce)**, **Mạng xã hội (Social Network)** và **Video ngắn (Short Video Commerce)**. Dự án được thiết kế với kiến trúc Monorepo mạnh mẽ, sẵn sàng cho việc mở rộng và tối ưu hiệu năng cao.
+## Tổng quan
+P-E-commerce hiện đang ở giai đoạn `Commerce Core MVP` với trọng tâm là giao dịch giữa `Buyer`, `Seller`, và `Admin`. Repo đã có runtime thật cho:
 
----
+- Catalog sản phẩm và category
+- Auth JWT cơ bản
+- Cart theo rule `single-seller`
+- Checkout COD
+- Order lifecycle cho buyer, seller, admin
+- Media upload cho seller/admin
+- Chat module nền tảng ở mức in-memory/websocket
 
-## 🏗️ Cấu trúc dự án (Monorepo)
-Dự án sử dụng **TurboRepo** để quản lý nhiều ứng dụng và gói thư viện trong một kho lưu trữ duy nhất.
+Phần social feed, short-video commerce, recommendation, affiliate và OAuth vẫn là roadmap, chưa phải runtime chính của repo hiện tại.
 
+## Cấu trúc repo
 ```text
 .
 ├── apps
-│   ├── web          # Ứng dụng React (Vite) dành cho Người mua & Mạng xã hội
-│   ├── api          # Backend NestJS (Core logic & RESTful API)
-│   └── admin        # Dashboard quản lý dành cho Admin (React + Vite)
-├── packages
-│   ├── ui           # Thư viện UI components dùng chung (TailwindCSS)
-│   ├── schema       # Định nghĩa Prisma Schema & Zod validation dùng chung
-│   ├── utils        # Các hàm tiện ích (Format, Auth helpers, Helpers)
-│   └── config       # Cấu hình dùng chung (ESLint, TypeScript, Tailwind)
-├── ai               # Hệ thống hướng dẫn & bộ nhớ dành cho AI Agents
-└── docker-compose.yml # Thiết lập môi trường Database (Postgres, Redis)
+│   ├── web          # Buyer/Seller commerce UI (React + Vite)
+│   ├── api          # NestJS API + Prisma/Postgres commerce backend
+│   └── admin        # Admin operations dashboard (React + Vite)
+├── ai               # Docs, planning memory, agent scaffolding
+└── docker-compose.yml
 ```
 
----
+## Tính năng đã có
 
-## 🚀 Tính năng cốt lõi
+### Buyer
+- Đăng ký / đăng nhập JWT
+- Xem catalog, lọc theo category, xem product detail
+- Thêm vào cart
+- Checkout COD
+- Xem order history
+- Hủy đơn khi trạng thái còn `CONFIRMED`
 
-### 1. Thương mại điện tử (Shopee-style)
-- **Quản lý sản phẩm**: Danh mục đa tầng, tìm kiếm tối ưu với GIN Index, bộ lọc giá và đánh giá.
-- **Giỏ hàng & Đặt hàng**: Quy trình checkout an toàn, xử lý giao dịch đồng nhất.
-- **Hệ thống giảm giá**: Quản lý Voucher, Coupon và các chương trình khuyến mãi.
-- **Theo dõi đơn hàng**: Trạng thái đơn hàng thời gian thực từ lúc đặt đến khi hoàn tất.
+### Seller
+- Tạo / sửa / archive sản phẩm
+- Upload ảnh sản phẩm qua media API
+- Xem incoming orders liên quan đến sản phẩm của mình
+- Chuyển trạng thái đơn `CONFIRMED -> SHIPPING -> COMPLETED`
 
-### 2. Mạng xã hội (Facebook-style)
-- **Bảng tin (News Feed)**: Thuật toán tổng hợp bài viết từ những người đang theo dõi.
-- **Tương tác**: Like, Comment, Share và hệ thống thông báo thời gian thực.
-- **Nhóm & Quan hệ**: Hệ thống Follow/Follower, tham gia nhóm và thảo luận.
-- **Tin nhắn trực tiếp (DM)**: Chat real-time giữa người dùng và chủ shop.
+### Admin
+- Xem operations metrics
+- Quản lý category
+- Xem toàn bộ order
+- Override trạng thái order khi cần
 
-### 3. Video ngắn & Thương mại (TikTok-style)
-- **Video Feed**: Cuộn vô tận, tối ưu hóa autoplay và tải trước video.
-- **Gắn thẻ sản phẩm**: Cho phép gắn link sản phẩm trực tiếp vào video ngắn.
-- **Mua hàng từ video**: Trải nghiệm "Click-to-buy" ngay trên giao diện xem video.
+## Tech stack thực tế
+- Frontend: React, Vite
+- Backend: NestJS, Prisma, PostgreSQL, JWT tự quản
+- Media: ImageKit
+- Infra local: Docker Compose cho Postgres
+- Tests: Jest cho API, Vitest cho web
 
-### 4. Hệ thống gợi ý (Rule-based Recommendation)
-Hệ thống sử dụng thuật toán chấm điểm hành vi (Scoring Engine) thay vì AI API bên ngoài để bảo mật và tối ưu chi phí:
-- **Điểm tương tác**: View (1đ), Like (5đ), Comment (10đ), Mua hàng (50đ).
-- **Category Affinity**: Gợi ý dựa trên mức độ yêu thích danh mục sản phẩm.
-- **Decay Factor**: Ưu tiên các tương tác gần nhất, giảm trọng số theo thời gian.
+## Chạy local
+1. Chạy `docker-compose up -d`
+2. Kiểm tra Postgres đã mở cổng `5432` và đang dùng DB `p_ecommerce`
+3. Trong `apps/api`: `npm install`
+4. Trong `apps/api`: `npm run prisma:generate`
+5. Trong `apps/api`: `npm run prisma:push`
+6. Trong `apps/api`: `npm run prisma:seed`
+7. Chạy `npm run dev` trong từng app cần dùng:
+   - `apps/api`
+   - `apps/web`
+   - `apps/admin`
 
----
+## Runtime health check
+- API health endpoint: `GET http://localhost:3000/v1/health`
+- Endpoint này trả trạng thái `api` và `database`, kèm `databaseUrl` đã được mask password.
+- Nếu `services.database.ok = false`, backend đang không dùng được catalog/cart/order runtime thật.
 
-## 🛠️ Công nghệ sử dụng
-- **Frontend**: React, TypeScript, Vite, TailwindCSS, Zustand, React Query.
-- **Backend**: NestJS, TypeScript, Zod Validation, Passport (JWT + Facebook OAuth).
-- **Database**: PostgreSQL (Main), Redis (Cache), Prisma ORM.
-- **Media**: Cloudinary (Lưu trữ và tối ưu hóa hình ảnh/video).
-- **DevOps**: Docker, TurboRepo, Playwright (E2E Testing).
+## Khi gặp lỗi Prisma ở catalog
+- Nếu thấy lỗi như `Invalid this.prisma.product.findMany()` hoặc `category.findMany()`, nguyên nhân thường không nằm ở query đó mà là:
+  - Postgres chưa chạy
+  - `DATABASE_URL` sai
+  - schema local chưa được `prisma:push`
+  - DB đang thiếu bảng/cột commerce mới
+- Bản hiện tại của API sẽ fail-fast ở bootstrap và log rõ hơn khi DB/schema chưa sẵn sàng.
+- Quy trình xử lý chuẩn:
+  1. Chạy lại `docker-compose up -d`
+  2. Xác nhận `.env` của `apps/api` đang dùng `postgresql://postgres:postgres@localhost:5432/p_ecommerce?schema=public`
+  3. Chạy `npm run prisma:push`
+  4. Chạy `npm run prisma:seed`
+  5. Gọi `GET /v1/health`
 
----
+## Demo accounts
+- Buyer: `buyer@example.com / buyer123`
+- Seller: `seller@example.com / seller123`
+- Admin: `admin@example.com / admin123`
 
-## 🧠 AI-Driven Development
-Dự án được thiết kế đặc biệt để tương tác với các AI Coding Assistant thông qua thư mục `/ai`:
-- `ai/rules.md`: Các quy tắc lập trình nghiêm ngặt.
-- `ai/architecture.md`: Mô tả chi tiết kiến trúc và logic nghiệp vụ.
-- `ai/tasks/`: Quản lý tiến độ công việc theo dạng DAG (Directed Acyclic Graph).
-
----
-
-## 🛠️ Hướng dẫn cài đặt nhanh
-1. Clone repository.
-2. Chạy `npm install` tại thư mục gốc.
-3. Cấu hình file `.env` (Database URL, Cloudinary, Facebook API).
-4. Chạy `docker-compose up -d` để khởi động Database.
-5. Chạy `npx prisma migrate dev` để tạo bảng.
-6. Chạy `npm run dev` để bắt đầu phát triển.
-
----
-*Dự án được thiết kế và vận hành bởi hệ thống AI-Driven Architecture.*
+## Trạng thái roadmap
+- Đã làm: commerce core + seller/admin operations cơ bản
+- Chưa làm: voucher, online payment, search nâng cao, social graph, feed, video commerce, recommendation, affiliate

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { OrderStatus, Role } from '@prisma/client';
 import { AuthGuard } from '../auth/auth.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -11,9 +11,22 @@ import { OrdersService } from './orders.service';
 export class AdminOrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
+  @Get('metrics')
+  metrics() {
+    return this.ordersService.getAdminMetrics();
+  }
+
   @Get()
-  list() {
-    return this.ordersService.listAdminOrders();
+  list(
+    @Query('status') status?: string,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+  ) {
+    return this.ordersService.listAdminOrders({
+      status,
+      page: page ? Number(page) : undefined,
+      pageSize: pageSize ? Number(pageSize) : undefined,
+    });
   }
 
   @Patch(':id/status')

@@ -23,17 +23,99 @@ export class CatalogService {
     });
   }
 
-  async listProducts(categoryId?: string) {
-    const products = await this.prisma.product.findMany({
-      where: {
-        status: ProductStatus.ACTIVE,
-        ...(categoryId ? { categoryId } : {}),
+  async createCategory(body: { name?: string }) {
+    const name = body.name?.trim();
+    if (!name) {
+      throw new BadRequestException('category name is required');
+    }
+
+    return this.prisma.category.create({
+      data: { name },
+    });
+  }
+
+  async updateCategory(id: string, body: { name?: string }) {
+    const name = body.name?.trim();
+    if (!name) {
+      throw new BadRequestException('category name is required');
+    }
+
+    const existing = await this.prisma.category.findUnique({ where: { id } });
+    if (!existing) {
+      throw new NotFoundException('category not found');
+    }
+
+    return this.prisma.category.update({
+      where: { id },
+      data: { name },
+    });
+  }
+
+  async deleteCategory(id: string) {
+    const existing = await this.prisma.category.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            products: true,
+          },
+        },
       },
-      orderBy: { createdAt: 'desc' },
-      include: productInclude,
     });
 
-    return products.map((product) => this.serializeProduct(product));
+    if (!existing) {
+      throw new NotFoundException('category not found');
+    }
+    if (existing._count.products > 0) {
+      throw new BadRequestException('cannot delete category with existing products');
+    }
+
+    return this.prisma.category.delete({
+      where: { id },
+    });
+  }
+
+  async listProducts(input?: {
+    categoryId?: string;
+    q?: string;
+    page?: number;
+    pageSize?: number;
+  }) {
+    const page = Math.max(1, Number(input?.page) || 1);
+    const pageSize = Math.min(24, Math.max(1, Number(input?.pageSize) || 12));
+    const q = input?.q?.trim();
+    const where: Prisma.ProductWhereInput = {
+      status: ProductStatus.ACTIVE,
+      ...(input?.categoryId ? { categoryId: input.categoryId } : {}),
+      ...(q
+        ? {
+            OR: [
+              { name: { contains: q, mode: 'insensitive' } },
+              { description: { contains: q, mode: 'insensitive' } },
+              { category: { name: { contains: q, mode: 'insensitive' } } },
+            ],
+          }
+        : {}),
+    };
+
+    const [products, total] = await Promise.all([
+      this.prisma.product.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        include: productInclude,
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      this.prisma.product.count({ where }),
+    ]);
+
+    return {
+      items: products.map((product) => this.serializeProduct(product)),
+      total,
+      page,
+      pageSize,
+      totalPages: Math.max(1, Math.ceil(total / pageSize)),
+    };
   }
 
   async getProduct(id: string) {

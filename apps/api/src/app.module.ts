@@ -5,6 +5,7 @@ import { CartModule } from './cart/cart.module';
 import { ChatModule } from './chat/chat.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { CatalogModule } from './catalog/catalog.module';
+import { HealthModule } from './health/health.module';
 import { MediaModule } from './media/media.module';
 import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -16,6 +17,7 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     PrismaModule,
     AuthModule,
+    HealthModule,
     CatalogModule,
     CartModule,
     OrdersModule,

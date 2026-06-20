@@ -1,3 +1,655 @@
-body { font-family: Arial, sans-serif; background: #f0f2f5; color: #111; }
-.panel { background: #fff; border-radius: 8px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
-.charts { gap: 16px; }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  font-family: 'Inter', sans-serif;
+  color: #111827;
+  background: #f8fafc;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.08), transparent 24%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  color: #111827;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  background: #fff;
+  color: #111827;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.adminShell {
+  min-height: 100vh;
+}
+
+.authCanvas {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 28px 18px 52px;
+}
+
+.adminApp {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 272px minmax(0, 1fr);
+}
+
+.adminSidebar {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 18px;
+  padding: 20px 16px;
+  border-right: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.96);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebarBrand,
+.sidebarFoot,
+.sidebarNav {
+  display: grid;
+  gap: 12px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #2563eb;
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.sidebarBrand strong {
+  font-size: 1.2rem;
+  letter-spacing: -0.03em;
+}
+
+.sideLink,
+.sessionBadge,
+.pill,
+.miniBadge,
+.statusNode {
+  border-radius: 14px;
+}
+
+.sideLink {
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  color: #111827;
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.sideLink.active,
+button.primary {
+  background: #2563eb;
+  color: #fff;
+  border-color: #2563eb;
+}
+
+.sessionBadge {
+  padding: 14px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+.sessionBadge span,
+.topLabel,
+.metricCard span,
+.loginFeatureCard span,
+.orderMetaCard span {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #64748b;
+}
+
+.sessionBadge strong {
+  font-size: 1rem;
+}
+
+.sidebarFoot button,
+.topbarActions button,
+.inlineForm button,
+.cardActions button,
+.paginationBar button {
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #111827;
+  padding: 10px 14px;
+  border-radius: 12px;
+}
+
+.adminMain {
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+}
+
+.adminTopbar,
+.adminCard,
+.banner,
+.loginCard,
+.loginFeatureCard,
+.metricCard,
+.orderMetaCard {
+  border: 1px solid #e5e7eb;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06);
+}
+
+.adminTopbar,
+.adminCard,
+.banner,
+.loginCard,
+.loginFeatureCard,
+.metricCard,
+.orderMetaCard {
+  border-radius: 18px;
+}
+
+.adminTopbar {
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+
+.adminTopbar h1 {
+  margin: 4px 0 0;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+.topbarActions,
+.chipRow,
+.cardActions,
+.statusRail,
+.loginLayout {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.topbarActions {
+  align-items: center;
+}
+
+.topbarSearch {
+  min-width: 280px;
+}
+
+.sessionChip {
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.sessionChip span {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.sessionChip strong {
+  color: #1d4ed8;
+}
+
+.banner {
+  padding: 14px 18px;
+}
+
+.banner.success {
+  background: #dcfce7;
+}
+
+.banner.error {
+  background: #fee2e2;
+}
+
+.adminContent,
+.metricsGrid,
+.contentGrid,
+.tableList,
+.summaryStack,
+.stack,
+.loginCopy,
+.loginForm {
+  display: grid;
+  gap: 16px;
+}
+
+.metricsGrid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.metricCard {
+  padding: 18px;
+}
+
+.metricCard strong {
+  display: block;
+  font-size: 1.9rem;
+  letter-spacing: -0.04em;
+}
+
+.contentGrid {
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.9fr);
+}
+
+.adminCard {
+  padding: 20px;
+}
+
+.tableCard,
+.sideSummaryCard {
+  align-content: start;
+}
+
+.sectionHead,
+.orderHead,
+.workspaceNote,
+.filterBar,
+.summaryLine,
+.tableRow,
+.orderLineList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.sectionHead {
+  align-items: start;
+}
+
+.sectionHead h2 {
+  margin: 0 0 6px;
+  font-size: 1.4rem;
+  letter-spacing: -0.03em;
+}
+
+.sectionHead p,
+.muted,
+.workspaceNote span {
+  color: #6b7280;
+}
+
+.tableList {
+  gap: 0;
+}
+
+.tableRow {
+  padding: 14px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tableRow:last-child {
+  border-bottom: 0;
+}
+
+.tableHead {
+  padding-top: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #64748b;
+}
+
+.productGridHead,
+.categoryGridHead {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(120px, 0.8fr) minmax(120px, 0.8fr) minmax(110px, 0.7fr) minmax(80px, 0.6fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.categoryGridHead {
+  grid-template-columns: minmax(0, 1.2fr) minmax(120px, 0.7fr) auto;
+}
+
+.miniBadge,
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.miniBadge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.miniBadge.ok {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.miniBadge.danger {
+  background: #fee2e2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.pill {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.summaryLine {
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.summaryLine:last-child {
+  border-bottom: 0;
+}
+
+.inlineSummary {
+  border-bottom: 0;
+  padding: 0;
+}
+
+.workspaceNote {
+  padding: 16px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #eff6ff, #f8fafc);
+  border: 1px solid #dbeafe;
+  margin-bottom: 18px;
+}
+
+.workspaceNote strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.inlineForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 12px;
+}
+
+.filterBar {
+  justify-content: space-between;
+  align-items: end;
+}
+
+.filterLabel {
+  display: grid;
+  gap: 8px;
+  max-width: 280px;
+}
+
+.orderCard {
+  display: grid;
+  gap: 16px;
+}
+
+.orderMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.orderMetaCard {
+  padding: 14px 16px;
+}
+
+.orderMetaCard strong {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.orderItems {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.orderLineList li {
+  padding: 8px 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.orderLineList li:last-child {
+  border-bottom: 0;
+}
+
+.statusRail {
+  align-items: center;
+}
+
+.statusNode {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.statusNode span {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.statusNode strong {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.statusNode.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.statusNode.active span {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.statusNode.danger {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+.statusConnector {
+  width: 28px;
+  height: 2px;
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.statusConnector.active {
+  background: #2563eb;
+}
+
+.paginationBar {
+  justify-content: flex-end;
+}
+
+.loginCard {
+  padding: 24px;
+}
+
+.loginLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.92fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.loginCopy h1 {
+  margin: 10px 0 12px;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.06em;
+}
+
+.loginFeatureGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.loginFeatureCard {
+  padding: 16px;
+  border-radius: 16px;
+}
+
+.loginFeatureCard strong {
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.loginForm {
+  padding: 18px;
+  border-radius: 18px;
+  background: linear-gradient(140deg, #eff6ff, #ffffff);
+  border: 1px solid #dbeafe;
+}
+
+label {
+  display: grid;
+  gap: 8px;
+}
+
+@media (max-width: 1100px) {
+  .adminApp {
+    grid-template-columns: 1fr;
+  }
+
+  .adminSidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .contentGrid,
+  .loginLayout,
+  .loginFeatureGrid,
+  .orderMetaGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 780px) {
+  .authCanvas,
+  .adminMain {
+    padding: 14px 12px 28px;
+  }
+
+  .adminTopbar,
+  .adminCard,
+  .loginCard {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .adminTopbar,
+  .sectionHead,
+  .workspaceNote,
+  .filterBar,
+  .summaryLine,
+  .tableRow,
+  .orderHead,
+  .orderLineList li {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .productGridHead,
+  .categoryGridHead,
+  .inlineForm,
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbarSearch {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .statusConnector {
+    width: 2px;
+    height: 18px;
+    margin-left: 11px;
+  }
+
+  .paginationBar {
+    justify-content: flex-start;
+  }
+}

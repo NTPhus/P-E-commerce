@@ -11,8 +11,18 @@ export class CatalogController {
   }
 
   @Get('products')
-  products(@Query('categoryId') categoryId?: string) {
-    return this.catalogService.listProducts(categoryId);
+  products(
+    @Query('categoryId') categoryId?: string,
+    @Query('q') q?: string,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+  ) {
+    return this.catalogService.listProducts({
+      categoryId,
+      q,
+      page: page ? Number(page) : undefined,
+      pageSize: pageSize ? Number(pageSize) : undefined,
+    });
   }
 
   @Get('products/:id')

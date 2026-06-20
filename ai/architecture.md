@@ -1,62 +1,62 @@
-# System Architecture: E-commerce + Social + Video Platform
+# System Architecture: Commerce Core MVP
 
-## 1. Monorepo Structure (TurboRepo)
-```
+## 1. Repo Structure
+```text
 .
 ├── apps
-│   ├── web          # React (Vite) - Social Feed, Shop, Short Videos
-│   ├── api          # NestJS - Core Backend Service
-│   └── admin        # React (Vite) - Management Dashboard
-├── packages
-│   ├── ui           # Shared Tailwind Components (Blue Theme)
-│   ├── schema       # Shared Zod + Prisma Types
-│   ├── utils        # Shared Helpers (Auth, Formatting)
-│   └── config       # Shared ESLint, TS, Tailwind Configs
-├── docker-compose.yml
-└── turbo.json
+│   ├── web          # Buyer + Seller UI
+│   ├── api          # NestJS commerce backend
+│   └── admin        # Admin operations UI
+├── ai               # Planning docs, memory, agent scaffolding
+└── docker-compose.yml
 ```
 
-## 2. Backend Module Breakdown (NestJS)
-- **Auth**: OAuth (Facebook), JWT, Role-based Access (Admin, Buyer, Seller, Affiliate).
-- **User**: Profiles, Social Graph (Follows, Followers).
-- **Social**: Feed Generation, Posts, Comments, Likes, Groups.
-- **Messaging**: Real-time DMs (Socket.io ready).
-- **Product**: Catalog, Search (Indexed), Category Management.
-- **Order**: Cart, Checkout, Vouchers, Tracking.
-- **Video**: Short video processing, Product anchoring.
-- **Recommendation**: Rule-based scoring engine.
-- **Media**: Cloudinary integration.
+Repo hiện chưa có `turbo.json` hay `packages/*` shared workspace như vision ban đầu.
 
-## 3. Recommendation Logic (Rule-Based)
-**Scoring Formula:**
-`Score = (V * 1) + (L * 5) + (C * 10) + (P * 50)`
-- `V`: Views
-- `L`: Likes
-- `C`: Comments
-- `P`: Purchases
+## 2. Runtime Scope
 
-**Personalization Algorithm:**
-1. **Interaction Tracking**: Log user interactions in `UserInteraction` table.
-2. **Category Affinity**: Calculate weights for each category based on interaction scores.
-3. **Decay Factor**: Reduce weight of old interactions (e.g., `-10% per week`).
-4. **Ranking**:
-   - Fetch items from top 3 affinity categories.
-   - Boost items with high global popularity (Purchases).
-   - Filter out already purchased items.
+### Implemented
+- **Auth**: JWT login/register, roles `ADMIN`, `BUYER`, `SELLER`
+- **Catalog**: Product list/detail, seller product CRUD, admin category CRUD
+- **Cart**: Persistent cart theo buyer, rule `single-seller`
+- **Checkout**: COD checkout, transactional order creation, stock decrement
+- **Orders**:
+  - Buyer: list/detail/cancel confirmed order
+  - Seller: view own incoming orders, move `CONFIRMED -> SHIPPING -> COMPLETED`
+  - Admin: full order oversight + status override
+- **Media**: ImageKit upload/delete for seller/admin
+- **Messaging**: In-memory chat/websocket scaffold
 
-## 4. Performance Strategy
-- **Database**: 
-  - GIN indexes for product search.
-  - Covering indexes for Social Feed queries.
-  - Prevent N+1 using Prisma's strict `select`.
-- **Frontend**:
-  - Image/Video Lazy Loading.
-  - Cloudinary auto-format/auto-quality (`f_auto, q_auto`).
-- **Caching**:
-  - Redis for Social Feed caching.
-  - In-memory cache for Vouchers and Categories.
+### Not Implemented Yet
+- Social graph, feed, groups, likes/comments
+- Short video commerce
+- Recommendation engine
+- Voucher/discount
+- OAuth/Facebook login
+- Affiliate workflows
 
-## 5. Testing Strategy
-- **Unit**: Business logic in `packages/utils` and NestJS `services`.
-- **Integration**: Database flow using a test container.
-- **E2E**: Playwright tests for `apps/web` (Happy path: Browse -> Add to Cart -> Checkout).
+## 3. Core Commerce Rules
+- Cart chỉ chứa sản phẩm từ một seller tại một thời điểm.
+- Checkout chỉ hỗ trợ COD.
+- Checkout dùng transaction để tạo order, order items, trừ stock, và clear cart.
+- Buyer chỉ được hủy order khi trạng thái đang là `CONFIRMED`.
+- Seller chỉ được cập nhật fulfillment cho order hoàn toàn thuộc catalog của seller đó.
+- Media upload chỉ mở cho `SELLER` và `ADMIN`.
+
+## 4. Data Model Highlights
+- `User(role)` với `ADMIN`, `BUYER`, `SELLER`
+- `Category`
+- `Product(status)` với `ACTIVE`, `ARCHIVED`
+- `Cart`, `CartItem`
+- `Order(status)` với `PENDING`, `CONFIRMED`, `SHIPPING`, `COMPLETED`, `CANCELLED`
+- `OrderItem`
+
+## 5. Verification Strategy
+- API build bằng `nest build`
+- API tests bằng Jest cho:
+  - auth
+  - cart seller isolation
+  - checkout
+  - order lifecycle
+- Frontend build bằng Vite cho `web` và `admin`
+- Frontend smoke test bằng Vitest cho `apps/web`

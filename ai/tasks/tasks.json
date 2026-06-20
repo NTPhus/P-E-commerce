@@ -1,46 +1,32 @@
 {
   "tasks": [
     {
-      "id": "T1.1",
-      "title": "Initialize TurboRepo",
-      "description": "Run npx create-turbo@latest to setup the monorepo base.",
+      "id": "HC1",
+      "title": "Add API request validation consistency",
+      "description": "Introduce consistent DTO validation strategy across auth, catalog, cart, checkout, and orders.",
       "status": "todo",
       "dependencies": []
     },
     {
-      "id": "T1.2",
-      "title": "Setup apps/api NestJS",
-      "description": "Initialize NestJS boilerplate with modular structure.",
+      "id": "HC2",
+      "title": "Add pagination and filtering",
+      "description": "Add pagination for product and order lists plus basic search/filter support.",
       "status": "todo",
-      "dependencies": ["T1.1"]
+      "dependencies": ["HC1"]
     },
     {
-      "id": "T1.3",
-      "title": "Setup apps/web React",
-      "description": "Initialize React + Vite + Tailwind boilerplate.",
+      "id": "HC3",
+      "title": "Add integration tests with real DB",
+      "description": "Run commerce flows against Postgres instead of service-only mocks.",
       "status": "todo",
-      "dependencies": ["T1.1"]
+      "dependencies": ["HC1"]
     },
     {
-      "id": "T1.4",
-      "title": "Config packages/schema",
-      "description": "Setup Prisma client and schema.prisma in shared package.",
+      "id": "HC4",
+      "title": "Add E2E buyer and seller flows",
+      "description": "Cover buyer checkout, buyer cancellation, and seller fulfillment with browser tests.",
       "status": "todo",
-      "dependencies": ["T1.1"]
-    },
-    {
-      "id": "T1.5",
-      "title": "Shared Config Packages",
-      "description": "Setup shared TSConfig, ESLint and Prettier.",
-      "status": "todo",
-      "dependencies": ["T1.1"]
-    },
-    {
-      "id": "T1.6",
-      "title": "Docker Environment",
-      "description": "Create docker-compose.yml for Postgres and Redis.",
-      "status": "todo",
-      "dependencies": ["T1.1"]
+      "dependencies": ["HC2", "HC3"]
     }
   ]
 }

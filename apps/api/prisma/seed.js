@@ -1,7 +1,12 @@
 const { PrismaClient, Role, ProductStatus } = require('@prisma/client');
+const { PrismaPg } = require('@prisma/adapter-pg');
 const crypto = require('crypto');
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  adapter: new PrismaPg(process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/p_ecommerce?schema=public', {
+    schema: 'public',
+  }),
+});
 
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString('hex');

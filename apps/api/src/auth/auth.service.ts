@@ -25,8 +25,12 @@ export class AuthService {
       throw new BadRequestException('email, password, and name are required');
     }
 
-    if (![Role.BUYER, Role.SELLER].includes(role)) {
-      throw new BadRequestException('role must be BUYER or SELLER');
+    if (role !== Role.BUYER && role !== Role.SELLER) {
+      throw new BadRequestException('self-registration supports only BUYER or SELLER');
+    }
+
+    if (password.length < 6) {
+      throw new BadRequestException('password must be at least 6 characters');
     }
 
     const existing = await this.prisma.user.findUnique({ where: { email } });

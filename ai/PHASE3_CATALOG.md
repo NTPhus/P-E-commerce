@@ -1,7 +1,15 @@
-Updated: 2026-05-01T08:15:54Z
-Auto-trigger timestamp: 2026-05-01T16:20:00Z
+# Phase 3 Catalog Status
 
-PR queued for automatic creation.
+Superseded by the implemented `Commerce Core MVP`.
 
-Auto-trigger for PR creation: ready-to-sync phase3/catalog milestone.
-Updated: 2026-05-01T16:00:00Z
+## Current Runtime
+- Public catalog list and detail endpoints are implemented.
+- Seller product CRUD is implemented.
+- Admin category CRUD is implemented.
+- Catalog UI is live in `apps/web`.
+
+## Canonical References
+- `README.md`
+- `ai/architecture.md`
+- `apps/api/src/catalog`
+- `apps/web/src/App.jsx`

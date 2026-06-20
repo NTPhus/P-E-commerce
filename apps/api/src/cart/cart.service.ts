@@ -50,6 +50,11 @@ export class CartService {
     const existing = cart.items.find((item) => item.productId === productId);
     const nextQuantity = (existing?.quantity || 0) + quantity;
 
+    const mixedSellerItem = cart.items.find((item) => item.product.seller.id !== product.sellerId);
+    if (mixedSellerItem) {
+      throw new BadRequestException('cart can only contain products from one seller at a time');
+    }
+
     if (nextQuantity > product.stock) {
       throw new BadRequestException('quantity exceeds available stock');
     }
